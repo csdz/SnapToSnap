@@ -9,57 +9,23 @@ namespace Example
     {
         public static void Main(string[] args)
         {
+            Program p = new Program();
 
-            using (var nf = new Notifier())
-            using (var ws = new WebSocket("ws://echo.websocket.org"))
+            MessageController msgCtrl = new MessageController();
+            msgCtrl.RegisterHandlers("RecvCBTest", p.RecvCBTest);
+
+            Console.WriteLine("\nType 'exit' to exit.\n");
+
+            msgCtrl.CallServerMethod(new string[] { "RecvCBTest", "I'm a student", "Why not Curry" });
+
+            Thread.Sleep(100 * 1000);
+        }
+
+        public void RecvCBTest(string[] msg)
+        {
+            for (int i = 0; i < msg.Length; i++)
             {
-                // Set the WebSocket events.
-
-                ws.OnOpen += (sender, e) => ws.Send("Hi, there!");
-
-                ws.OnMessage += (sender, e) =>
-                    nf.Notify(
-                      new NotificationMessage
-                      {
-                          Header = "WebSocket Message",
-                          Body = !e.IsPing ? e.Data : "Received a ping."
-                      }
-                    );
-
-                ws.OnError += (sender, e) =>
-                    nf.Notify(
-                      new NotificationMessage
-                      {
-                          Header = "WebSocket Error",
-                          Body = e.Message
-                      }
-                    );
-
-                ws.OnClose += (sender, e) =>
-                    nf.Notify(
-                      new NotificationMessage
-                      {
-                          Header = String.Format("WebSocket Close ({0})", e.Code),
-                          Body = e.Reason
-                      }
-                    );
-                ws.Connect();
-
-                // Connect to the server asynchronously.
-                //ws.ConnectAsync ();
-
-                Console.WriteLine("\nType 'exit' to exit.\n");
-                while (true)
-                {
-                    Thread.Sleep(1000);
-                    Console.Write("> ");
-                    var msg = Console.ReadLine();
-                    if (msg == "exit")
-                        break;
-
-                    // Send a text message.
-                    ws.Send(msg);
-                }
+                Console.WriteLine("{0} param: {1}\n", i, msg[i]);
             }
         }
     }

@@ -3,17 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 
+
+
 namespace Example
 {
-    internal class Notifier : IDisposable
+    public delegate void OnNotificationMessage(NotificationMessage msg);
+    public class Notifier : IDisposable
     {
         private volatile bool _enabled;
         private ManualResetEvent _exited;
         private Queue<NotificationMessage> _queue;
         private object _sync;
 
-        public Notifier()
+        private OnEntireData _onMsgCB;
+
+        public Notifier(OnEntireData o)
         {
+            _onMsgCB = o; // set on data callback
             _enabled = true;
             _exited = new ManualResetEvent(false);
             _queue = new Queue<NotificationMessage>();
@@ -27,7 +33,7 @@ namespace Example
                       var msg = dequeue();
                       if (msg != null)
                       {
-                          Console.WriteLine(msg);
+                          _onMsgCB(msg.ToString());
                       }
                       else
                       {
