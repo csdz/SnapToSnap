@@ -24,7 +24,14 @@ namespace Example
 
             // Set the WebSocket events.
 
-            ws.OnOpen += (sender, e) => ws.Send("Hi, there!");
+            ws.OnOpen += (sender, e) =>
+                nf.Notify(
+                    new NotificationMessage
+                    {
+                        Header = "WebSocket Open",
+                        Body = "Connected"
+                    }
+                );
 
             nf = new Notifier(recv);
             ws.OnMessage += (sender, e) =>

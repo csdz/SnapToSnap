@@ -12,9 +12,9 @@ namespace Example
             Program p = new Program();
 
             MessageController msgCtrl = new MessageController();
-            msgCtrl.RegisterHandlers("RecvCBTest", p.RecvCBTest);
-
-            Console.WriteLine("\nType 'exit' to exit.\n");
+            msgCtrl.RegisterHandler("RecvCBTest", p.RecvCBTest);
+            msgCtrl.RegisterHandler("Connected", p.Connected);
+            msgCtrl.Connect();
 
             msgCtrl.CallServerMethod(new string[] { "RecvCBTest", "I'm a student", "Why not Curry" });
 
@@ -25,8 +25,13 @@ namespace Example
         {
             for (int i = 0; i < msg.Length; i++)
             {
-                Console.WriteLine("{0} param: {1}\n", i, msg[i]);
+                Console.WriteLine("{0} param: {1}", i, msg[i]);
             }
+        }
+
+        public void Connected(string[] msg)
+        {
+            Console.WriteLine("Client and Server connnected!");            
         }
     }
 }

@@ -17,10 +17,9 @@ namespace Example{
             rpcMapper = new RPCManager();
             handler = new Handler(rpcMapper);
             dispatcher = new Dispatcher(handler);
-            cs = new ClientSocket(dispatcher);
 	    }
 
-        public void RegisterHandlers(string funName, Function fun)
+        public void RegisterHandler(string funName, Function fun)
 	    {
             rpcMapper.RegisterHandler(funName, fun);	
 	    }
@@ -28,6 +27,11 @@ namespace Example{
         public void CallServerMethod(string[] rpcSeg)
         {
             rpcMapper.CallServerMethod(rpcSeg);
+        }
+
+        public void Connect()
+        {
+            cs = new ClientSocket(dispatcher);
         }
 
     }
